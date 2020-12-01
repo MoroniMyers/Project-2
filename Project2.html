@@ -144,23 +144,23 @@
                         var oGame = new Game(teamOneScore, teamTwoScore, "W");
                         teams[i].games.push(oGame);
                         teams[i].setWinsLosses(teams[i].wins + 1, teams[i].losses);
-                        teams[i].calcWinLossPct;
+                        teams[i].calcWinLossPct();
 
                         oGame = new Game(teamTwoScore, teamOneScore, "L");
                         teams[j].games.push(oGame);
                         teams[j].setWinsLosses(teams[j].wins, teams[j].losses + 1);
-                        teams[j].calcWinLossPct;
+                        teams[j].calcWinLossPct();
                     }
                     else if (teamOneScore < teamTwoScore) {
                         var oGame = new Game(teamOneScore, teamTwoScore, "L");
                         teams[i].games.push(oGame);
                         teams[i].setWinsLosses(teams[i].wins, teams[i].losses + 1);
-                        teams[i].calcWinLossPct;
+                        teams[i].calcWinLossPct();
 
                         oGame = new Game(teamTwoScore, teamOneScore, "W");
                         teams[j].games.push(oGame);
                         teams[j].setWinsLosses(teams[j].wins + 1, teams[j].losses);
-                        teams[j].calcWinLossPct;
+                        teams[j].calcWinLossPct();
                     }
 
                     //second game, team 2 is home
@@ -181,23 +181,23 @@
                         var oGame = new Game(teamOneScore, teamTwoScore, "W");
                         teams[i].games.push(oGame);
                         teams[i].setWinsLosses(teams[i].wins + 1, teams[i].losses);
-                        teams[i].calcWinLossPct;
+                        teams[i].calcWinLossPct();
 
                         oGame = new Game(teamTwoScore, teamOneScore, "L");
                         teams[j].games.push(oGame);
                         teams[j].setWinsLosses(teams[j].wins, teams[j].losses + 1);
-                        teams[j].calcWinLossPct;
+                        teams[j].calcWinLossPct();
                     }
                     else if (teamOneScore < teamTwoScore) {
                         var oGame = new Game(teamOneScore, teamTwoScore, "L");
                         teams[i].games.push(oGame);
                         teams[i].setWinsLosses(teams[i].wins, teams[i].losses + 1);
-                        teams[i].calcWinLossPct;
+                        teams[i].calcWinLossPct();
 
                         oGame = new Game(teamTwoScore, teamOneScore, "W");
                         teams[j].games.push(oGame);
                         teams[j].setWinsLosses(teams[j].wins + 1, teams[j].losses);
-                        teams[j].calcWinLossPct;
+                        teams[j].calcWinLossPct();
                     }
                 }
             }
