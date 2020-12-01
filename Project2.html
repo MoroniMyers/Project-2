@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+</head>
+<body>
+    <ul id="teamList">
+        <li>BYU</li>
+        <li>Gonzaga</li>
+        <li>Loyola</li>
+        <li>Pacific</li>
+        <li>Pepperdine</li>
+        <li>Portland</li>
+        <li>Saint Marys</li>
+        <li>San Diego</li>
+        <li>San Francisco</li>
+        <li>Santa Clara</li>
+    </ul>
+    <br><br>
+    <input type="button" value="Play Game" onclick="playGame()">
+    <br><br>
+    <p>Season Results:</p>
+    <p id="output"></p>
+    <script>
+        //parent class
+        class Team
+        {
+            //properties
+            teamName; //string
+            wins; //int
+            losses; //int
+            winLossPct; //Double
+            games = []; //populated by objects created in Game class
+            
+            getTeam() //returns team name
+            {
+                return this.teamName;
+            }
+            
+            setTeam(sTeamName) //recieves parameter used to set variable teamName
+            {
+                this.teamName = sTeamName;
+            }
+            
+            setWinsLosses(iWins, iLosses) //receives parameters for wins and losses
+            {
+                this.wins = iWins
+                this.losses = iLosses;
+                //also calculates winLossPct variable
+                this.winLossPct = this.calcWinLossPct;
+            }
+            
+            getWins() //returns number of wins
+            {
+                return this.wins;
+            }
+            
+            getLosses() //returns number of losses
+            {
+                return this.losses;
+            }
+            
+            calcWinLossPct() //calculates and updates winLossPct attribute
+            {
+                winLossPct = this.wins / this.losses;
+            }
+        }
+
+
+        //create objects in Team class "games" array
+        class Game
+        {
+            //attributes
+            myScore; //int
+            theirScore; //int
+            winOrLoss; //int
+            
+            //constructor that receives all 3 parameters to populate above attributes
+            constructor (iScore, iTheirScore, sWinOrLoss)
+            {
+                this.myScore = iScore;
+                this.theirScore = iTheirScore;
+                this.winOrLoss = sWinOrLoss; 
+            }
+        }
+
+
+        //inherits from Team class (child of Team class)
+        class BasketballTeam extends Team
+        {
+
+            //AND adds the following attributes
+            totalPointsFor; //int
+            totalPointsAgainst; //int
+
+            addPointsFor(iAddPoints) //adds points to totalPointsFor
+            {
+                this.totalPointsFor = this.totalPointsFor + iAddPoints;
+            }
+
+            addPointsAgainst(iSubtractPoints) //adds points to totalPointsAgainst
+            {
+                this.totalPointsAgainst = this.totalPointsAgainst + iSubtractPoints;
+            }
+
+            getAllPoints() //returns string displaying totalPointsFor and totalPointsAgainst as follows:
+            {
+                "Points for " + this.totalPointsFor + " and Points Against " + this.totalPointsAgainst;
+            }
+        }
+
+        function playGame() {
+            var teams = [];
+            var selection = document.getElementById("teamList").getElementsByTagName("li");
+
+            for (var i = 0; i < selection.length; i++) {
+                var oTeam = new BasketballTeam();
+
+                oTeam.setTeam(selection[i].innerHTML);
+                oTeam.setWinsLosses(0, 0);
+                teams.push(oTeam);
+            }
+
+            //I will select the first team, J will select the second
+            for (var i = 0; i < teams.length - 1; i++) {
+                for (var j = i + 1; j < teams.length; j++) {
+                    var teamOneScore;
+                    var teamTwoScore;
+                    //first game, team 1 is home
+                    teamOneScore = (Math.floor(Math.random() * 101)) + 5;
+                    teamTwoScore = (Math.floor(Math.random() * 101));
+                    while (teamOneScore == teamTwoScore) {
+                        teamOneScore = teamOneScore + (Math.floor(Math.random() * 16));
+                        teamTwoScore = teamTwoScore + (Math.floor(Math.random() * 16));
+                    }
+                    
+                    //add to total points for and against for both teams
+                    teams[i].addPointsFor(teamOneScore);
+                    teams[i].addPointsAgainst(teamTwoScore);
+                    teams[j].addPointsFor(teamTwoScore);
+                    teams[j].addPointsAgainst(teamOneScore);
+                    
+                    if (teamOneScore > teamTwoScore) {
+                        var oGame = new Game(teamOneScore, teamTwoScore, "W");
+                        teams[i].games.push(oGame);
+                        teams[i].setWinsLosses(teams[i].wins + 1, teams[i].losses);
+                        teams[i].calcWinLossPct;
+
+                        oGame = new Game(teamTwoScore, teamOneScore, "L");
+                        teams[j].games.push(oGame);
+                        teams[j].setWinsLosses(teams[j].wins, teams[j].losses + 1);
+                        teams[j].calcWinLossPct;
+                    }
+                    else if (teamOneScore < teamTwoScore) {
+                        var oGame = new Game(teamOneScore, teamTwoScore, "L");
+                        teams[i].games.push(oGame);
+                        teams[i].setWinsLosses(teams[i].wins, teams[i].losses + 1);
+                        teams[i].calcWinLossPct;
+
+                        oGame = new Game(teamTwoScore, teamOneScore, "W");
+                        teams[j].games.push(oGame);
+                        teams[j].setWinsLosses(teams[j].wins + 1, teams[j].losses);
+                        teams[j].calcWinLossPct;
+                    }
+
+                    //second game, team 2 is home
+                    teamOneScore = (Math.floor(Math.random() * 101));
+                    teamTwoScore = (Math.floor(Math.random() * 101)) + 5;
+                    while (teamOneScore == teamTwoScore) {
+                        teamOneScore = teamOneScore + (Math.floor(Math.random() * 16));
+                        teamTwoScore = teamTwoScore + (Math.floor(Math.random() * 16));
+                    }
+                    
+                    //add to total points for and against for both teams
+                    teams[i].addPointsFor(teamOneScore);
+                    teams[i].addPointsAgainst(teamTwoScore);
+                    teams[j].addPointsFor(teamTwoScore);
+                    teams[j].addPointsAgainst(teamOneScore);
+                    
+                    if (teamOneScore > teamTwoScore) {
+                        var oGame = new Game(teamOneScore, teamTwoScore, "W");
+                        teams[i].games.push(oGame);
+                        teams[i].setWinsLosses(teams[i].wins + 1, teams[i].losses);
+                        teams[i].calcWinLossPct;
+
+                        oGame = new Game(teamTwoScore, teamOneScore, "L");
+                        teams[j].games.push(oGame);
+                        teams[j].setWinsLosses(teams[j].wins, teams[j].losses + 1);
+                        teams[j].calcWinLossPct;
+                    }
+                    else if (teamOneScore < teamTwoScore) {
+                        var oGame = new Game(teamOneScore, teamTwoScore, "L");
+                        teams[i].games.push(oGame);
+                        teams[i].setWinsLosses(teams[i].wins, teams[i].losses + 1);
+                        teams[i].calcWinLossPct;
+
+                        oGame = new Game(teamTwoScore, teamOneScore, "W");
+                        teams[j].games.push(oGame);
+                        teams[j].setWinsLosses(teams[j].wins + 1, teams[j].losses);
+                        teams[j].calcWinLossPct;
+                    }
+                }
+            }
+
+            //THIS IS JUST FOR TESTING PURPOSES, DELETE LATER
+            var output = "";
+            for (var i = 0; i < teams.length; i++) {
+                output = output + teams[i].getTeam() + " " + teams[i].getWins() + "-" + teams[i].getLosses() + '<br>';
+            }
+            document.getElementById("output").innerHTML = output;
+        }
+    </script>
+</body>
+</html>
