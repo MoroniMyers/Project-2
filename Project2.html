@@ -4,6 +4,17 @@
 
 </head>
 <body>
+    <!--
+        Team 5, Project 2: Connor Salveson, Moroni Myers, Ethan Westfall, John Tippets, Josh Rencher
+        Project description: Create a parent class called "Team" and a child class called "Basketball Team."
+        The constructor in the child class using methods will instantiate each basketball team in the WCC.
+        Then, the code will randomly generate scores and wins/losses (with overtime tie-breakers) for each 
+        team in the conference. Once the scores are created and records are determined for each team, the
+        program will bubble sort the teams by season record and display the conference rankings on the page.
+        Each team in the conference will play each other twice (no more, no less). The code will also save
+        each game as a class.
+        Code given in the Homework assignment prompt:
+    -->
     <ul id="teamList">
         <li>BYU</li>
         <li>Gonzaga</li>
@@ -30,7 +41,7 @@
             wins; //int
             losses; //int
             winLossPct; //Double
-            games = []; //populated by objects created in Game class
+            games = []; //populated by objects created in Game class - to save each game score
             
             getTeam() //returns team name
             {
@@ -84,11 +95,9 @@
             }
         }
 
-
         //inherits from Team class (child of Team class)
         class BasketballTeam extends Team
         {
-
             //AND adds the following attributes
             totalPointsFor; //int
             totalPointsAgainst; //int
@@ -109,10 +118,14 @@
             }
         }
 
+        //function that will run the season and output the results to the HTML
         function playGame() {
+            //declare variable array to store the teams, as well as getting the list from the ul tag in the HTML
             var teams = [];
             var selection = document.getElementById("teamList").getElementsByTagName("li");
 
+            //Loop makes new BasketballTeams based on the selection from the <ul> tag under each <li> element. It sets the wins and losses
+            //to zero and then pushes the new team into the teams array
             for (var i = 0; i < selection.length; i++) {
                 var oTeam = new BasketballTeam();
 
@@ -121,14 +134,19 @@
                 teams.push(oTeam);
             }
 
-            //I will select the first team, J will select the second
-            for (var i = 0; i < teams.length - 1; i++) {
-                for (var j = i + 1; j < teams.length; j++) {
+
+            //This next section of code will select each team, make them play a game with one another twice, with alternating "home" teams,
+            //and then updates the wins and losses and win percentage of each, and saves a game object into the "games" array for each team.
+            
+            //Loop selects each team. "i" will choose the first team and "j" the second
+            for (var i = 0; i < teams.length - 1; i++) { //the "-1" eliminates selecting the last team, as by the time "i" is the last team, that team will have played all it's games
+                for (var j = i + 1; j < teams.length; j++) { //var j = i + 1 ensures that the first team selected will not play agaisnst itself
                     var teamOneScore;
                     var teamTwoScore;
-                    //first game, team 1 is home
+                    //first game, team 1 is home, randomizing scores between 0-100 for each, with 5 extra points for the home team
                     teamOneScore = (Math.floor(Math.random() * 101)) + 5;
                     teamTwoScore = (Math.floor(Math.random() * 101));
+                    //if the scores are even we have an overtime period which adds betweem 0-15 to each team.
                     while (teamOneScore == teamTwoScore) {
                         teamOneScore = teamOneScore + (Math.floor(Math.random() * 16));
                         teamTwoScore = teamTwoScore + (Math.floor(Math.random() * 16));
@@ -140,17 +158,25 @@
                     teams[j].addPointsFor(teamTwoScore);
                     teams[j].addPointsAgainst(teamOneScore);
                     
+                    //if statement determines the winner so we can update the "game" class properly with a "W" or "L"
+                    //the first instance is if the first team wins
                     if (teamOneScore > teamTwoScore) {
+                        //create a new "Game" with the constructor of the team's score, the other team's score and a Win
                         var oGame = new Game(teamOneScore, teamTwoScore, "W");
+                        //add it to the team's "games" array
                         teams[i].games.push(oGame);
+                        //update wins and losses
                         teams[i].setWinsLosses(teams[i].wins + 1, teams[i].losses);
+                        //update the percentage
                         teams[i].calcWinLossPct();
 
+                        //does all the above for the second team, switching their score and opp score, and L's for Ws
                         oGame = new Game(teamTwoScore, teamOneScore, "L");
                         teams[j].games.push(oGame);
                         teams[j].setWinsLosses(teams[j].wins, teams[j].losses + 1);
                         teams[j].calcWinLossPct();
                     }
+                    //does the opposite of the if statement in the case team 2 wins
                     else if (teamOneScore < teamTwoScore) {
                         var oGame = new Game(teamOneScore, teamTwoScore, "L");
                         teams[i].games.push(oGame);
@@ -163,7 +189,7 @@
                         teams[j].calcWinLossPct();
                     }
 
-                    //second game, team 2 is home
+                    //second game, team 2 is home, does everything that is done above but just switches the home team advantage
                     teamOneScore = (Math.floor(Math.random() * 101));
                     teamTwoScore = (Math.floor(Math.random() * 101)) + 5;
                     while (teamOneScore == teamTwoScore) {
@@ -202,13 +228,30 @@
                 }
             }
 
-            //THIS IS JUST FOR TESTING PURPOSES, DELETE LATER
+            //declare a temporary variable for the sort
+            var tempPos;
+
+            //nested loop allows us to compare 2 teams to one another, check for their total wins, and if one is higher than the other
+            //we sort it so that the top teams appear at the top of the list.
+            for (var i = 0; i < teams.length; i++) {
+                for (var j = 0; j < teams.length; j++) {
+                    if (teams[i].getWins() > teams[j].getWins()) {
+                        tempPos = teams[j];
+                        teams[j] = teams[i];
+                        teams[i] = tempPos;
+                    }
+                } 
+            }  
+
+            //create an empty string variable for the output
             var output = "";
+            //go through each element in the teams array, and adds the team name and record to the output
             for (var i = 0; i < teams.length; i++) {
                 output = output + teams[i].getTeam() + " " + teams[i].getWins() + "-" + teams[i].getLosses() + '<br>';
             }
+            //return the output to the "output" tag in the HTML
             document.getElementById("output").innerHTML = output;
-        }
+        } 
     </script>
 </body>
 </html>
