@@ -167,7 +167,7 @@
                         teams[i].games.push(oGame);
                         //update wins and losses
                         teams[i].setWinsLosses(teams[i].wins + 1, teams[i].losses);
-                        //update the percentage
+                        //update the percentage (we know that setWinsLosses already calculates this, we just are doing it because the instructions say to)
                         teams[i].calcWinLossPct();
 
                         //does all the above for the second team, switching their score and opp score, and L's for Ws
